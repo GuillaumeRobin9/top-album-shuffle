@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- <h1>Shuffle album</h1> -->
     <button id="shuffleBtn">Shuffle</button>
     <button id="loginBtn">Login with Spotify</button>
     <p id="result"></p>
@@ -17,8 +16,8 @@
     <script type="module">
         import init, { shuffle_album_from_csv } from "./pkg/shuffle_album.js";
 
-        const clientId = 'bfa8d6ca1bd94e71b61d684bedc5bc31';
-        const redirectUri = 'http://127.0.0.1:5501/index.html'; // Changez cela selon votre environnement
+        const clientId = 'bfa8d6ca1bd94e71b61d684bedc5bc31'; // my clientid of spotify doesn't matter it's public
+        const redirectUri = 'http://127.0.0.1:5501/index.html';  // random redirect URL based on the API documentation
         const scopes = 'user-read-private user-read-email';
 
         let accessToken = null;
@@ -65,9 +64,10 @@
                 const [albumName, artistName] = extractAlbumAndArtist(albumInfo);
                 const spotifyId = await searchSpotifyAlbum(albumName, artistName, accessToken);
                 
+                // Every button event 
                 document.getElementById("iframeBtn").onclick = () => showSpotifyIframe(spotifyId);
                 document.getElementById("appBtn").onclick = () => openInApp(spotifyId);
-
+                // hide the buttons if the spotifyId is null
                 document.getElementById("iframeBtn").style.display = "inline-block";
                 document.getElementById("appBtn").style.display = "inline-block";
             }
@@ -79,6 +79,7 @@
                 return [albumName, artistName];
             }
 
+            // Spotify iframe 
             function showSpotifyIframe(spotifyId) {
                 const iframe = document.createElement('iframe');
                 iframe.src = `https://open.spotify.com/embed/album/${spotifyId}`;
@@ -90,15 +91,16 @@
                 document.body.appendChild(iframe);
             }
 
+            // Open in Spotify App
             function openInApp(spotifyId) {
                 window.open(`spotify:album:${spotifyId}`, "_blank");
             }
-
+            // Search Spotify Album
             async function searchSpotifyAlbum(albumName, artistName, accessToken) {
                 const query = encodeURIComponent(`${albumName} ${artistName}`);
                 const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=album&limit=1`, {
                     headers: {
-                        'Authorization': `Bearer ${accessToken}`
+                        'Authorization': `Bearer ${accessToken}` // Bearer token
                     }
                 });
 

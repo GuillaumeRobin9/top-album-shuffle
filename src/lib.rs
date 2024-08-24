@@ -2,13 +2,13 @@ use wasm_bindgen::prelude::*;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
 
-// Expose this function to JavaScript
+// Expose this function to js 
 #[wasm_bindgen]
 pub fn shuffle_album_from_csv(csv_content: &str) -> String {
-    // Crée un vecteur pour stocker les albums
+    // store the album in a vector
     let mut albums = Vec::new();
 
-    // Divise le CSV en lignes
+    // get every line of the CSV
     for line in csv_content.lines().skip(1) { // Skip the header row
         let fields: Vec<&str> = line.split(',').collect();
         if fields.len() == 4 {
@@ -20,11 +20,11 @@ pub fn shuffle_album_from_csv(csv_content: &str) -> String {
         }
     }
 
-    // Choisir un album aléatoire
+    // take a rand album
     let mut rng = thread_rng();
     let chosen_album = albums.choose(&mut rng);
 
-    // Retourner l'album choisi ou un message par défaut
+    // return the album
     match chosen_album {
         Some(album) => album.to_string(),
         None => "No album found".to_string(),
